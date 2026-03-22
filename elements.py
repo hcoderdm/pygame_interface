@@ -49,14 +49,21 @@ Attribute types.
 
 
 class MeasureType(Enum):
-    """"""
+    """
+    Represents types of measurement, with possible values ABSOLUTE and
+    RELATIVE.
+    """
 
     ABSOLUTE = auto()
     RELATIVE = auto()
 
 
 class JustifyType(Enum):
-    """"""
+    """
+    Represents text justification options with three enum members: START,
+    CENTER, and END. Use JustifyType to specify alignment in layouts or
+    formatting contexts.
+    """
 
     START = auto()
     CENTER = auto()
@@ -64,7 +71,10 @@ class JustifyType(Enum):
 
 
 class AlignmentType(Enum):
-    """"""
+    """
+    Represents possible alignment positions, such as TOPLEFT, CENTER, and
+    BOTTOMRIGHT, for layout or positioning purposes.
+    """
 
     TOPLEFT = auto()
     MIDTOP = auto()
@@ -78,7 +88,12 @@ class AlignmentType(Enum):
 
 
 class TextDecorationTypes(Flag):
-    """Combinable text style flags (e.g. ``BOLD | UNDERLINE``)."""
+    """
+    Represents a set of text decoration options using a flag enumeration,
+    including NONE, ANTIALIASING, BOLD, ITALIC, STRIKETHROUGH, and
+    UNDERLINE. Multiple decorations can be combined using bitwise
+    operations.
+    """
 
     NONE = 0
     ANTIALIASING = auto()
@@ -88,19 +103,11 @@ class TextDecorationTypes(Flag):
     UNDERLINE = auto()
 
 
-class ImageTransformType(Flag):
-    """"""
-
-    NONE = 0
-    FLIP_X = auto()  # Flip sprite horizontally
-    FLIP_Y = auto()  # Flip sprite vertically
-    ROTATE_CCW_90 = auto()  # Rotate 90 degrees counterclockwise
-    ROTATE_CCW_180 = auto()  # Rotate 180 degrees counterclockwise
-    ROTATE_CCW_270 = auto()  # Rotate 270 degrees counterclockwise
-
-
 class OverflowType(Enum):
-    """"""
+    """
+    Represents the type of overflow handling, with options: CLIP, EXTEND,
+    and OVERFLOW.
+    """
 
     CLIP = auto()
     EXTEND = auto()
@@ -119,7 +126,12 @@ consistent interface for layout and appearance customization.
 
 @dataclass(kw_only=True)
 class Element(ABC):
-    """ """
+    """
+    Represents an abstract UI element with configurable layout, appearance,
+    and interaction properties, including size, alignment, color, border,
+    shadow, and visibility. Designed for subclassing to define specific UI
+    components.
+    """
 
     id: str = field(default_factory=lambda: uuid.uuid4().hex[:8])
     justify: JustifyType = JustifyType.CENTER
@@ -158,30 +170,17 @@ class Element(ABC):
 
 
 """
-Element modifiers.
-"""
-
-
-@dataclass(kw_only=True)
-class SelectedModifier(Element):
-    """Per-element overrides applied when the element is the current selection.
-
-    Every field mirrors an ``Element`` property but defaults to ``None``,
-    meaning "keep the element's own value."  Only non-``None`` fields take
-    effect while the element is selected.
-    """
-
-    text_color: RGBA = COLOR_PALETTE_ACCENT
-
-
-"""
 Non-visual components.
 """
 
 
 @dataclass(kw_only=True)
 class Division(Element):
-    """"""
+    """
+    Represents a container element that groups multiple Element instances
+    with configurable spacing, background, and shadow colors. The Division
+    is not directly selectable or expandable.
+    """
 
     elements: list[Element] = field(default_factory=lambda: [])
 
@@ -197,14 +196,22 @@ class Division(Element):
 
 @dataclass(kw_only=True)
 class HorizontalDivision(Division):
-    """"""
+    """
+    Represents a horizontal division, inheriting from Division. This class
+    is a dataclass with keyword-only initialization and currently does not
+    add additional attributes or methods.
+    """
 
     pass
 
 
 @dataclass(kw_only=True)
 class VerticalDivision(Division):
-    """"""
+    """
+    Represents a specialized Division that models a vertical partition;
+    inherits all behavior from Division without adding new attributes or
+    methods.
+    """
 
     pass
 
@@ -214,20 +221,19 @@ VerticalDivision()
 
 @dataclass(kw_only=True)
 class Gap(Element):
-    """"""
-
-    # overflow: OverflowType = OverflowType.CLIP
+    """
+    Represents a layout element with configurable anchor, margin, offset,
+    padding, background and shadow colors, and flags for flexibility,
+    selectability, and expandability. Inherits from Element.
+    """
 
     anchor: MEASURE = (0.0, 0.0)
     margin: MEASURE = (0.0, 0.0)
     offset: MEASURE = (0.0, 0.0)
     padding: MEASURE = (0.0, 0.0)
 
-    # size_measure = ElementMeasureTypes.RELATIVE_PARENT
-
     background_color: RGBA = TRANSPARENT
     shadow_color: RGBA = TRANSPARENT
-    # background_alpha: int = 0xFF
 
     is_flexible: bool = False
     is_selectable: bool = False
@@ -247,6 +253,11 @@ experience by providing context and organization to interactive components.
 
 @dataclass(kw_only=True)
 class Text(Element):
+    """
+    Represents a text element with customizable content, color, background,
+    font, size, decorations, and selection or wrapping options. Inherits
+    from Element.
+    """
     """"""
 
     text: str = ""  # Text content to display
@@ -265,7 +276,10 @@ class Text(Element):
 
 @dataclass(kw_only=True)
 class NormalText(Text):
-    """"""
+    """
+    Represents a text element with a default font size of 18, a light gray
+    color (#E0E0E0FF), and bold formatting. Inherits from Text.
+    """
 
     font_size: int = 18 * 1
     text_color: RGBA = "#E0E0E0FF"
@@ -274,7 +288,11 @@ class NormalText(Text):
 
 @dataclass(kw_only=True)
 class TitleText(Text):
-    """"""
+    """
+    Represents a styled text element for titles, extending Text with a
+    larger default font_size, customizable text_color, and optional
+    text_format decoration.
+    """
 
     font_size: int = 18 * 4
     text_color: RGBA = WHITE
@@ -283,7 +301,11 @@ class TitleText(Text):
 
 @dataclass(kw_only=True)
 class SubtitleText(Text):
-    """"""
+    """
+    Represents styled subtitle text with customizable font_size, text_color,
+    text_background, and text_format. Inherits from Text. Default font size
+    is 18, with black text on a white background and no text decoration.
+    """
 
     font_size: int = 18
     text_color: RGBA = BLACK
@@ -293,7 +315,10 @@ class SubtitleText(Text):
 
 @dataclass(kw_only=True)
 class HeadingOneText(Text):
-    """"""
+    """
+    Represents a level-one heading text style with customizable font, size,
+    color, shadow, and text decoration options. Inherits from Text.
+    """
 
     font_path: str = "editundo.ttf"
     font_size: int = 18 * 3
@@ -306,7 +331,10 @@ class HeadingOneText(Text):
 
 @dataclass(kw_only=True)
 class HeadingTwoText(Text):
-    """"""
+    """
+    Represents a level-two heading text style with customizable font, size,
+    color, shadow, and text decoration options. Inherits from Text.
+    """
 
     font_path: str = "editundo.ttf"
     font_size: int = 18 * 2
@@ -319,7 +347,10 @@ class HeadingTwoText(Text):
 
 @dataclass(kw_only=True)
 class HeadingThreeText(Text):
-    """"""
+    """
+    Represents a level-three heading text style with customizable font,
+    size, color, shadow, and text decoration options. Inherits from Text.
+    """
 
     font_path: str = "editundo.ttf"
     font_size: int = NATIVE_FONT_SIZE
@@ -328,20 +359,6 @@ class HeadingThreeText(Text):
     shadow_color: RGBA = "#E6A23EFF"
     shadow_offset: MEASURE = (1.0, 1.0)
     text_format: TextDecorationTypes = TextDecorationTypes.NONE
-
-
-@dataclass(kw_only=True)
-class Image(Element):
-    """"""
-
-    is_selectable: bool = False  # Images are not selectable
-
-    image_path: str  # Path to the sprite image file
-
-    scale: tuple[float, float] = (1.0, 1.0)  # Scale factors for image resizing
-    transform: ImageTransformType = ImageTransformType.NONE  # Built-in transformation flags for flipping/rotating
-    tint: RGBA = TRANSPARENT  # Color tint (RGBA) applied to image
-    alpha: float = 1.0  # Transparency level (0.0 = transparent, 1.0 = opaque)
 
 
 """
@@ -389,6 +406,10 @@ class Button(Element):
     selected_text_color: RGBA = "#EC4662FF"
 
     def __call__(self):
+        """
+        Invokes the button's associated action when the Button instance is
+        called like a function.
+        """
         self.action()
 
 
@@ -397,7 +418,11 @@ class InputField(Element):
 
     @dataclass(kw_only=True)
     class InputHintText(NormalText):
-        """"""
+        """
+        Represents a styled hint text for input fields, with customizable text,
+        font_size, text_color, and text_decorations. Inherits from NormalText
+        and defaults to displaying "[RETURN]" in italic with antialiasing.
+        """
 
         text: str = "[RETURN]"
         font_size: int = int(18 * 1.5)
@@ -406,7 +431,11 @@ class InputField(Element):
 
     @dataclass(kw_only=True)
     class InputValueText(NormalText):
-        """"""
+        """
+        Represents a styled text input value with a customizable font_size and
+        text_color, inheriting from NormalText. Designed for use where input
+        text appearance needs to be specified.
+        """
 
         font_size: int = int(18 * 1.5)
         text_color: RGBA = "#F0F0F0FF"

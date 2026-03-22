@@ -82,22 +82,18 @@ class MenuManager:
     """
 
     def top(self) -> MenuType | None:
-        """"""
+        """Returns the first (top) item in the stack"""
         if len(self._stack) >= 1:
             return self._stack[-1]
         return None
 
     def in_stack(self, menu_type: type[MenuType]) -> bool:
-        """"""
+        """Returns whether a given `menu_type` is in the stack"""
         return menu_type in self._stack
 
     def depth_stack(self) -> int:
-        """"""
+        """Returns the size of the stack"""
         return len(self._stack)
-
-    @property
-    def stack(self) -> Iterator[MenuType]:
-        return iter(self._stack)
 
 
 # Module-level singleton

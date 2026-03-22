@@ -15,7 +15,12 @@ from .elements import *
 
 @dataclass(kw_only=True)
 class MenuType(ABC):
-    """A single screen of interactive menu elements."""
+    """
+    Represents an abstract menu type with configurable layout, scrolling,
+    and selection logic. Manages a root container of elements, supports
+    smooth scrolling, and provides methods to navigate and select among
+    selectable elements.
+    """
 
     id: str = field(default_factory=lambda: uuid.uuid4().hex[:8])
 
@@ -165,6 +170,10 @@ class MenuType(ABC):
             return
         self._selected_index = max((self._selected_index - 1), 0)
 
+
+"""
+The following are example use cases of `MenuType`
+"""
 
 @dataclass(kw_only=True)
 class Start(MenuType):
